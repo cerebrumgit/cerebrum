@@ -27,7 +27,7 @@ Acesse o diretório do Magento e execute o seguinte comando no terminal
 
 	wget https://raw.githubusercontent.com/cerebrumgit/cerebrum/master/wizard_module.sh
 	chmod +x ./wizard_module.sh
-	./wizard_module.sh
+	./wizard_module.sh 5.3
 
 O programa deve executar os seguintes processos:
 
@@ -143,7 +143,6 @@ wizard_module(){
 	#
 
 	#php -i | grep -i '/php.ini'
-	REQUIREMENTS=''
 
 	#
 
@@ -151,7 +150,6 @@ wizard_module(){
 
 	if [ -z "$class_exists" ] ; then # -z string - True if the length of string is zero.
 		log "${red} (A extensão do PHP mbstring deve ser instalado para que o módulo funcione corretamente. Entre em contato com sua empresa de hospedagem informando o erro e solicite a ativação da extensão) ${color_end}\n"
-		REQUIREMENTS='false'
 	else
 		log "${green} (PHP mbstring encontrado) ${color_end}\n"
 	fi
@@ -162,7 +160,6 @@ wizard_module(){
 
 	if [ -z "$class_exists" ] ; then # -z string - True if the length of string is zero.
 		log "${red} (A extensão do PHP Soap deve ser instalado para que o módulo funcione corretamente. Entre em contato com sua empresa de hospedagem informando o erro e solicite a ativação da extensão) ${color_end}\n"
-		REQUIREMENTS='false'
 	else
 		log "${green} (PHP Soap encontrado) ${color_end}\n"
 	fi
@@ -174,7 +171,6 @@ wizard_module(){
 	if [ -z "$zendGuardLoader" ]
 	then
 		log "${red} (Zend Guard Loader não encontrado) ${color_end}\n"
-		REQUIREMENTS='false'
 	else
 		log "${green} (Zend Guard Loader encontrado) ${color_end}\n"
 	fi
@@ -192,7 +188,6 @@ wizard_module(){
 	if [ -z "$phpversion" ]
 	then
 		log "${red} ($phpversion) ${color_end}\n"
-		REQUIREMENTS='false'
 	else
 		log "${green} (PHP $phpversion) ${color_end}\n"
 	fi
@@ -281,21 +276,15 @@ wizard_module(){
 	then
 		log "${green} (Executando) ${color_end}\n"
 
-		#echo $REQUIREMENTS
-		chrlen=${#REQUIREMENTS} ## string lenght
+		chrlen=${#accept} ## string lenght
 		#echo $chrlen
 
-		if [ $chrlen -gt 0 ]; then
-			log "${red} (Houve as seguintes fahas acima.) ${color_end}\n"
-		else
-			log "${green} (Módulo sendo mesclado ao projeto) ${color_end}\n"
+		log "${green} (Módulo sendo mesclado ao projeto) ${color_end}\n"
 
-			wget https://github.com/cerebrumgit/php$phpversion_rpl-magento1-cerebrum_telencephalon/archive/master.zip
-			unzip master.zip
-			cp -Rv php$phpversion_rpl-magento1-cerebrum_telencephalon-master/* .
-			rm -fr master.zip php$phpversion_rpl-magento1-cerebrum_telencephalon-master
-
-		fi
+		wget https://github.com/cerebrumgit/php$phpversion_rpl-magento1-cerebrum_telencephalon/archive/master.zip
+		unzip master.zip
+		cp -Rv php$phpversion_rpl-magento1-cerebrum_telencephalon-master/* .
+		rm -fr master.zip php$phpversion_rpl-magento1-cerebrum_telencephalon-master
 
 	else
 		log "${red} (Processo abortado) ${color_end}\n"
