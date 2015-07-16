@@ -25,11 +25,9 @@ Antes acesse o Magento e mantenha o Compiler e Cache desativado
 
 Acesse o diretório do Magento e execute o seguinte comando no terminal
 
-	bash < <(wget -q --no-check-certificate -O - https://raw.githubusercontent.com/cerebrumgit/cerebrum/master/wizard_module.sh)
-
-	ou caso queira
-
-	bash < <(curl -s -L https://raw.githubusercontent.com/cerebrumgit/cerebrum/master/wizard_module.sh)
+	wget https://raw.githubusercontent.com/cerebrumgit/cerebrum/master/wizard_module.sh
+	chmod +x ./wizard_module.sh
+	./wizard_module.sh
 
 O programa deve executar os seguintes processos:
 
@@ -37,8 +35,6 @@ O programa deve executar os seguintes processos:
 2. Possibilidade de backup do banco de dados e arquivos do projeto
 3. Criação de projeto "ambiente de teste"
 4. Mesclagem do módulo ao projeto "Podendo ser usado para instalação/atualização"
-
-Veja o video demonstrando o que o programa faz
 
 2. 
 
