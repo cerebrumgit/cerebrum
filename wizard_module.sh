@@ -123,6 +123,8 @@ function xml_value(){
 
 wizard_module(){
 
+	#echo -e "Arguments: (${0}) - (${1}) - (${2}) - (${3}) - (${4}) - (${5})"
+
     # ##
     # functionBefore
     # ##
@@ -182,6 +184,9 @@ wizard_module(){
 	phpversion=`php -v`
 	phpversion=${phpversion:0:7} # Extract a Substring from a Variable
 	phpversion=${phpversion:4:3}
+	if [ "$1" ] ; then
+		phpversion=${1}
+	fi
 	phpversion_rpl=${phpversion//./} # Replace ponto por nada
 
 	if [ -z "$phpversion" ]
@@ -315,6 +320,6 @@ wizard_module(){
 
 set_colors
 user_interface
-wizard_module
+wizard_module ${1} ${2}
 
 exit 0
