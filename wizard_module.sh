@@ -1,7 +1,8 @@
 #!/bin/bash
 
 ####################################################################
-# CEREBRUM Comércio e Desenvolvimento de Sistemas de Informática Ltda ME - CNPJ 07.361.259/0001-07
+# Copyright © 2015 Cerebrum. All rights reserved.
+# http://www.cerebrum.com.br/
 ####################################################################
 
 ####################################################################
@@ -14,13 +15,30 @@ function usage()
 
 1. 
 
+Foi criado o seguinte programa em Shell Script
+
+https://github.com/cerebrumgit/cerebrum/blob/master/wizard_module.sh
+
+Para usar o mesmo
+
+Antes acesse o Magento e mantenha o Compiler e Cache desativado
+
 Acesse o diretório do Magento e execute o seguinte comando no terminal
 
 	bash < <(wget -q --no-check-certificate -O - https://raw.githubusercontent.com/cerebrumgit/cerebrum/master/wizard_module.sh)
 
-ou
+	ou caso queira
 
 	bash < <(curl -s -L https://raw.githubusercontent.com/cerebrumgit/cerebrum/master/wizard_module.sh)
+
+O programa deve executar os seguintes processos:
+
+1. Checagem do recurso de servidor: mbstring, soap, Zend Guard Loader
+2. Possibilidade de backup do banco de dados e arquivos do projeto
+3. Criação de projeto "ambiente de teste"
+4. Mesclagem do módulo ao projeto "Podendo ser usado para instalação/atualização"
+
+Veja o video demonstrando o que o programa faz
 
 2. 
 
