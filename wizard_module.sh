@@ -232,7 +232,7 @@ wizard_module(){
 	if [ "$accept" == "S" ]
 	then
 
-		tar -cpzf $file_tgz . --exclude=var --exclude=media
+		tar -cpzf $file_tgz . --exclude=var --exclude=media --exclude=ambiente_01
 
 	fi
 
@@ -250,13 +250,14 @@ wizard_module(){
 		cd `pwd`/ambiente_01
 
 		log "${red} (Avisos) ${color_end}\n"
-		log "${yellow} (Foi criado o seguinte diretório `pwd`) ${color_end}\n"
-		log "${yellow} (1. Efetue a criação do banco de teste) ${color_end}\n"
-		log "${yellow} (2. Importe os dados para o banco de teste) ${color_end}\n"
-		log "${yellow} (mysql -h 'dbhost' -u 'dbuser' -p'dbpass' 'dbname' < 'file.sql') ${color_end}\n"
-		log "${yellow} (Acesse o phpmyadmin e execute a instrução SQL e altere os value para a nova URL do projeto) ${color_end}\n"
-		log "${yellow} (SELECT * FROM core_config_data WHERE path like '%base_url%') ${color_end}\n"
-		log "${yellow} (Acesse o projeto, estando funcional execute esse programa agora sem criar o ambiente de teste, onde deve ser feito a mesclagem do módulo para o dirétorio) ${color_end}\n"
+		log "${yellow} Foi criado o seguinte diretório `pwd` ${color_end}\n"
+		log "${yellow} 1. Efetue a criação do banco de teste ${color_end}\n"
+		log "${yellow} 2. Importe os dados para o banco de teste ${color_end}\n"
+		log "${yellow} mysql -h 'dbhost' -u 'dbuser' -p'dbpass' 'dbname' < 'file.sql' ${color_end}\n"
+		log "${yellow} Acesse o phpmyadmin e execute a instrução SQL e altere os value para a nova URL do projeto ${color_end}\n"
+		log "${yellow} SELECT * FROM core_config_data WHERE path like '%base_url%' ${color_end}\n"
+		log "${yellow} Edite o arquivo de conexão ao banco de dados em /ambiente_01/app/etc/local.xml ${color_end}\n"
+		log "${yellow} Acesse o projeto, estando funcional execute esse programa agora sem criar o ambiente de teste, onde deve ser feito a mesclagem do módulo para o dirétorio ${color_end}\n"
 
 		exit
 
@@ -265,8 +266,8 @@ wizard_module(){
 	#
 
 	log "${red} (Avisos) ${color_end}\n"
-	log "${yellow} (Será feito o download e mesclagem do módulo em `pwd`) ${color_end}\n"
-	log "${yellow} (Certifique se de ter desativado o Compiler e Cache) ${color_end}\n"
+	log "${yellow} Será feito o download e mesclagem do módulo em `pwd` ${color_end}\n"
+	log "${yellow} Certifique se de ter desativado o Compiler e Cache ${color_end}\n"
 
 	#
 
