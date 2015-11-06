@@ -19,7 +19,7 @@ Foi criado o seguinte programa em Shell Script, testado no Ubuntu 15.04
 
 https://github.com/cerebrumgit/cerebrum/blob/master/magento2_install.sh
 
-Antes de executar a execução do script certifique se conferir as variaveis
+Antes de executar o script certifique se conferir as variaveis
 
 Para executar o mesmo informe os seguintes comandos no terminal
 
@@ -203,19 +203,7 @@ magento2_install() {
 
 	log "${cyan} (Update Magento configuration) ${color_end}\n"
 
-    mysql -h $dbhost -u $dbuser -p $dbpass $dbname -e "INSERT INTO \`$dbname\`.\`core_config_data\`
-    (\`path\`, \`value\`)
-    VALUES
-    ('dev/template/minify_html', 1),
-    ('dev/js/enable_js_bundling', 1),
-    ('dev/js/merge_files', 1),
-    ('dev/js/minify_files', 1),
-    ('dev/css/merge_css_files', 1),
-    ('dev/css/minify_files', 1),
-    ('web/seo/use_rewrites', 1),
-    ('web/url/redirect_to_base', 1),
-    ('admin/security/use_form_key', 1)
-    ON DUPLICATE KEY UPDATE \`value\` = VALUES(\`value\`);"
+    mysql -h $dbhost -u $dbuser -p $dbpass $dbname -e "INSERT INTO \`$dbname\`.\`core_config_data\` (\`path\`, \`value\`) VALUES ('dev/template/minify_html', 1), ('dev/js/enable_js_bundling', 1), ('dev/js/merge_files', 1), ('dev/js/minify_files', 1), ('dev/css/merge_css_files', 1), ('dev/css/minify_files', 1), ('web/seo/use_rewrites', 1), ('web/url/redirect_to_base', 1), ('admin/security/use_form_key', 1) ON DUPLICATE KEY UPDATE \`value\` = VALUES(\`value\`);"
 
 	log "${cyan} (Executando Composer para atualizar dependências) ${color_end}\n"
 
