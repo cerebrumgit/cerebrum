@@ -234,13 +234,13 @@ magento2_install() {
 
 	php index.php
 
-	#composer require magento/sample-bundle-all:*
+	composer require magento/sample-bundle-all:*
 	#composer require ebizmarts/magento2-mandrill:*
 	#composer require ebizmarts/magento2-magemonkey:*
 	#composer require ebizmarts/magento2-abandonedcart:*
 	#composer require ebizmarts/magento2-autoresponder:*
 	#composer require sweettooth/magento2-module-webhook:*
-	composer require cerebrumgit/magento2-bundle-php56:*
+	#composer require cerebrumgit/magento2-bundle-php56:*
 	#composer require narayanvarma/magento2-google-tagmanager:*
 	#composer require muriloamaral/magento2module:dev-master
 	#composer require dmamontov/benchmark-tools ~1.0.2
