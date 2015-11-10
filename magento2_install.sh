@@ -179,7 +179,9 @@ magento2_install() {
 
 	log "${cyan} (Adicionando suporte a módulo sample data) ${color_end}\n"
 
-	composer require magento/module-sample-data:$versao_magento
+	#composer require magento/sample-data:$versao_magento
+
+	php bin/magento sampledata:deploy
 
 	log "${cyan} Criando o banco de dados (${dbname}) ${color_end}\n"
 
