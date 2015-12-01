@@ -113,7 +113,7 @@ magento2_install() {
 
 	log "${cyan} (Setando variaveis) ${color_end}\n"
 
-	versao_magento='100.0.0'
+	versao_magento='2.0.0'
 	variacao_projeto='dev08'
 	nome_projeto="magento2-$versao_magento-$variacao_projeto"
 	dbhost='127.0.0.1'
@@ -132,6 +132,42 @@ magento2_install() {
 
 	# 
 
+	echo -n -e "${yellow}"
+	echo "-------------------------------------------------------------------------"
+	echo -n ""
+	echo ""
+	echo "Assistente de instalação para Magento"
+	echo ""
+	echo ""
+	echo "Versão Magento: $versao_magento"
+	echo "Store URL: $url_projeto"
+	echo "Pasta: $directory_base"
+	echo "Database Password: $dbpass"
+	echo "Admin First Name: $adminfname"
+	echo "Admin Last Name: $adminlname"
+	echo "Admin Email Address: $adminemail"
+	echo "Admin Username: $adminuser"
+	echo "Admin Password: $adminpass"
+	echo "Database Host: $dbhost"
+	echo "Database Name: $dbname"
+	echo "Database User: $dbuser"
+	echo ""
+	echo "-------------------------------------------------------------------------"
+	echo -n -e "${color_end}"
+	echo
+
+	read -e -p "Deseja prosseguir [S/N]: " -i "" accept
+
+	if [ "$accept" == "S" ]
+	then
+		log "${green} (Processando) ${color_end}\n"
+    else
+		log "${red} (Processo abortado) ${color_end}\n"
+		exit
+    fi
+
+	# 
+
 	log "${cyan} (Acessa diretório) ${color_end}\n"
 
 	mkdir $directory_base
@@ -139,9 +175,13 @@ magento2_install() {
 	ls -all
 	pwd
 
+	log "${cyan} (Comandos Composer) ${color_end}\n"
+
+	composer --version && sudo composer self-update && composer clear-cache
+
 	log "${cyan} (git clone) ${color_end}\n"
 
-	git clone https://github.com/magento/magento2.git
+	composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition magento2
 	cd magento2
 	ls -all
 	pwd
@@ -155,33 +195,15 @@ magento2_install() {
 	ls -all
 	pwd
 
-	log "${cyan} (Comandos Composer) ${color_end}\n"
-
-	composer --version && sudo composer self-update
-
-	#composer clear-cache && composer update
-
 	log "${cyan} (Executando Composer para instalar dependências) ${color_end}\n"
 
 	composer install
 
 	log "${cyan} (Efetuando backup do arquivo composer.json e editando) ${color_end}\n"
 
-	# http://devdocs.magento.com/guides/v1.0/install-gde/install/sample-data.html#instgde-install-sample-enable-before
-
 	cp composer.json composer.json.bak
 
-	sed -i "s/\"minimum\-stability\"\:\ \"alpha\"/\"minimum\-stability\"\:\ \"beta\"/g" composer.json
-
-	log "${cyan} (Adicionando referência do repositorio do Magento ao composer.json) ${color_end}\n"
-
-	composer config repositories.magento composer http://packages.magento.com
-
-	log "${cyan} (Adicionando suporte a módulo sample data) ${color_end}\n"
-
-	#composer require magento/sample-data:$versao_magento
-
-	php bin/magento sampledata:deploy
+	cp .htaccess .htaccess.bak
 
 	log "${cyan} Criando o banco de dados (${dbname}) ${color_end}\n"
 
@@ -205,18 +227,28 @@ magento2_install() {
 
 	log "${cyan} (Update Magento configuration) ${color_end}\n"
 
-    mysql -h $dbhost -u $dbuser -p $dbname -e "INSERT INTO \`$dbname\`.\`core_config_data\` (\`path\`, \`value\`) VALUES ('dev/template/minify_html', 1), ('dev/js/enable_js_bundling', 1), ('dev/js/merge_files', 1), ('dev/js/minify_files', 1), ('dev/css/merge_css_files', 1), ('dev/css/minify_files', 1), ('web/seo/use_rewrites', 1), ('web/url/redirect_to_base', 1), ('admin/security/use_form_key', 1) ON DUPLICATE KEY UPDATE \`value\` = VALUES(\`value\`);"
+	mysql -h $dbhost -u $dbuser -p $dbname -e "\
+		INSERT INTO \`core_config_data\` \
+		(\`scope\`, \`scope_id\`, \`path\`, \`value\`) \
+		VALUES \
+		('default', '0', 'general/locale/weight_unit', kgs) \
+		('default', '0', 'admin/security/session_lifetime', 38000) \
+		('default', '0', 'admin/dashboard/enable_charts', 1) \
+		('websites', '2', 'shipping/origin/country_id', BR) \
+		('websites', '2', 'shipping/origin/region_id', 1) \
+		('websites', '2', 'shipping/origin/postcode', 01311-000) \
+		ON DUPLICATE KEY UPDATE \`value\` = VALUES(\`value\`); \
+	"
 
 	log "${cyan} (Executando Composer para atualizar dependências) ${color_end}\n"
 
 	composer clear-cache && composer update
 
-	log "${cyan} (.htaccess -> enable developer mode) ${color_end}\n"
-
-	cp .htaccess .htaccess.bak
+	log "${cyan} (.htaccess -> update) ${color_end}\n"
 
 	STRING_DE='#   SetEnv MAGE_MODE developer'
-	STRING_PARA='SetEnv MAGE_MODE developer'
+	STRING_PARA='SetEnv MAGE_MODE developer \
+SetEnv MAGE_PROFILER html'
 
 	sed -i "s/$STRING_DE/$STRING_PARA/g" .htaccess;
 
@@ -224,16 +256,7 @@ magento2_install() {
 
 	php index.php
 
-	composer require magento/sample-bundle-all:*
-	#composer require ebizmarts/magento2-mandrill:*
-	#composer require ebizmarts/magento2-magemonkey:*
-	#composer require ebizmarts/magento2-abandonedcart:*
-	#composer require ebizmarts/magento2-autoresponder:*
-	#composer require sweettooth/magento2-module-webhook:*
-	#composer require cerebrumgit/magento2-bundle-php56:*
-	#composer require narayanvarma/magento2-google-tagmanager:*
-	#composer require muriloamaral/magento2module:dev-master
-	#composer require dmamontov/benchmark-tools ~1.0.2
+	composer require cerebrumgit/magento2-bundle-php56:*
 
 	log "${cyan} (Para registrar o módulo no Magento2 deve executar o comando a seguir) ${color_end}\n"
 
@@ -248,35 +271,9 @@ magento2_install() {
 		php bin/magento ${ARRAY_0[$COUNT]}
 		let "COUNT = COUNT +1"
 
-	done 
+	done
 
-	#log "${cyan} (Para registrar o módulo no Magento2 deve executar o comando a seguir) ${color_end}\n"
-
-	#sudo chmod 777 -R . && php bin/magento cache:disable && php bin/magento cache:clean && php bin/magento cache:flush && php bin/magento cache:status && php bin/magento maintenance:status && php bin/magento module:status && php bin/magento setup:db:status && php bin/magento setup:upgrade && sudo chmod 777 -R .
-
-	#log "${cyan} (Para atualizar seu repositório local para obter o código mais recente) ${color_end}\n"
-
-	# git reset --hard HEAD && git pull origin develop && sudo composer self-update && composer clear-cache && composer update && php bin/magento cache:disable && php bin/magento cache:clean && php bin/magento cache:flush && php bin/magento cache:status && php bin/magento maintenance:status && php bin/magento module:status && php bin/magento setup:db:status && php bin/magento setup:upgrade && sudo chmod 777 -R .
-
-	#echo 'Remove static and generated files'
-
-	#rm -R -f ./var/* ./pub/static/*
-
-	#log "${cyan} (Clone the sample data repository) ${color_end}\n"
-
-	#cd /var/www/html/public_html
-
-	#git clone -b master https://github.com/magento/magento2-sample-data.git
-
-	#cd magento2-sample-data
-
-	#sudo chown -R :www-data .
-
-	#sudo find . -type d -exec chmod 770 {} \; && sudo find . -type f -exec chmod 660 {} \;
-
-	#php -f ./dev/tools/build-sample-data.php -- --ce-source="/var/www/html/public_html/$nome_projeto"
-
-	#php bin/magento setup:upgrade
+	sudo chmod 777 -R ./var
 
 
 	# ##
